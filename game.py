@@ -11,6 +11,9 @@ obstacle_1 = pygame.transform.scale(pygame.image.load("Sprites/obs1.png"), (50, 
 obstacle_2 = pygame.transform.scale(pygame.image.load("Sprites/obs2.png"), (50, 75))
 flyer = pygame.transform.scale(pygame.image.load("Sprites/fly.png"), (50, 50))
 
+ground = pygame.transform.scale(pygame.image.load("Sprites/frontbg.png"), (1000, 200))
+sky = pygame.transform.scale(pygame.image.load("Sprites/backbg.png"), (1000, 250))
+
 root = pygame.display.set_mode((1000,400))
 
 running = True
@@ -42,6 +45,8 @@ obstacles = []
 last_obstacle = -30
 dino_y = 200
 score = 0
+ground_location = 0
+sky_location = 0
 
 while running:
     for event in pygame.event.get():
@@ -63,14 +68,24 @@ while running:
 
     while collided == False:
         score += 3 * delta_time
-        root.fill((0,0,0))
+
+        root.blit(ground, (ground_location, 250))
+        root.blit(ground, (ground_location+1000, 250))
+        ground_location -= get_speed(score) * delta_time
+        if ground_location <= -1000:
+            ground_location = 0
+
+        root.blit(sky, (sky_location, 0))
+        root.blit(sky, (sky_location+1000, 0))
+        sky_location -= get_speed(score) * delta_time * 0.7
+        if sky_location <= -1000:
+            sky_location = 0
 
         dino_y = get_dino_height(last_jump, score)
-
         root.blit(dino, (150, dino_y))
         dino_hitbox = pygame.Rect(150, dino_y, dino.get_width(), dino.get_height())
 
-        if score >= last_obstacle + (1200 / get_speed(score)):
+        if score >= last_obstacle + (1200 / get_speed(score)): # Spawn obstacles
             spawn = random.randint(0, 100)
             if spawn <= 40:
                 if score >= 400: # spawn flyers
@@ -80,17 +95,17 @@ while running:
                 else:
                     obstacle_type = random.randint(0,100)
                 
-                if obstacle_type <= 50:
+                if obstacle_type <= 50: # Spawn basic obstacles
                     obstacles.append(["OBS1", 1000])
-                    if obstacle_type <=15 and score >= 30:
+                    if obstacle_type <=15 and score >= 90: # Spawn double obstacles
                         obstacles.append(["OBS1", 1050])
 
-                elif obstacle_type <= 100:
+                elif obstacle_type <= 100: # Spawn tall obstacles
                     obstacles.append(["OBS2", 1000])
-                    if obstacle_type <=60:
+                    if obstacle_type <=60: # Spawn tall then small
                         obstacles.append(["OBS1", 1050])
 
-                elif obstacle_type <= 150:
+                elif obstacle_type <= 150: # Spawn flying obstacles
                     obstacles.append(["FLY", 1000])
 
 
@@ -100,7 +115,7 @@ while running:
 
         index = 0
 
-        for obstacle in obstacles:
+        for obstacle in obstacles: # Draw obstacles
             if obstacle[1] <= -500:
                 temp = obstacles
                 temp.pop(index)
