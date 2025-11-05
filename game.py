@@ -22,7 +22,7 @@ pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 15)
 
 def get_speed(score):
-    return (maths.sqrt(score+1)*25)+60
+    return (maths.sqrt(score+1)*15)+80
 
 def get_dino_height(last_jump, score): # TODO: this is very wrong
     x = score - last_jump
@@ -30,6 +30,11 @@ def get_dino_height(last_jump, score): # TODO: this is very wrong
     y = max(75, min(200, y))
 
     return y
+
+def get_player_score(score):
+    player_score = 3 * score * (1.001**score)
+
+    return f"{player_score:.0f}"
 
 collided = False
 last_jump = -50
@@ -121,7 +126,7 @@ while running:
         except: # Triggers if no sprites despawned
             pass
 
-        text_surface = my_font.render(f"{(score*2):.0f}", False, (255, 255, 255))
+        text_surface = my_font.render(f"{get_player_score(score)}", False, (255, 255, 255))
         root.blit(text_surface, (950,5))
 
         for event in pygame.event.get():
