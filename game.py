@@ -121,7 +121,7 @@ while running:
         except: # Triggers if no sprites despawned
             pass
 
-        text_surface = my_font.render(f"{score:.0f}", False, (255, 255, 255))
+        text_surface = my_font.render(f"{(score*2):.0f}", False, (255, 255, 255))
         root.blit(text_surface, (950,5))
 
         for event in pygame.event.get():
