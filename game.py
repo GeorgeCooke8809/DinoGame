@@ -86,7 +86,10 @@ while running:
         dino_hitbox = pygame.Rect(150, dino_y, dino.get_width(), dino.get_height())
 
         if score >= last_obstacle + (1200 / get_speed(score)): # Spawn obstacles
-            spawn = random.randint(0, 100)
+            if int(get_player_score(score)) < 400:
+                spawn = random.randint(0, 100)
+            else:
+                spawn = random.randint(0,125)
             if spawn <= 40:
                 if score >= 400: # spawn flyers
                     obstacle_type = random.randint(0,150)
@@ -105,7 +108,7 @@ while running:
                     if obstacle_type <=60: # Spawn tall then small
                         obstacles.append(["OBS1", 1050])
 
-                elif obstacle_type <= 150: # Spawn flying obstacles
+                elif obstacle_type <= 125: # Spawn flying obstacles
                     obstacles.append(["FLY", 1000])
 
 
